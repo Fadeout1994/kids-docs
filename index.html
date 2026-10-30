@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小小纪录片放映厅 · 3–6 岁高分纪录片</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#090b0f;
+    --card:#13171e;
+    --line:rgba(255,255,255,.075);
+    --text:#eef3f9;
+    --muted:#8d9aab;
+    --warm:#ffb26b;
+    --pink:#ff8fb1;
+    --cool:#5ec8ff;
+    --green:#7ce0a3;
+    --radius:18px;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:'';
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 520px at 12% -8%, rgba(255,178,107,.15), transparent 62%),
+      radial-gradient(820px 500px at 88% -4%, rgba(94,200,255,.13), transparent 62%),
+      radial-gradient(760px 620px at 50% 108%, rgba(124,224,163,.07), transparent 62%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 24px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:64px 0 34px;text-align:center}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 15px;border-radius:999px;
+    border:1px solid rgba(255,178,107,.32);
+    background:rgba(255,178,107,.08);
+    color:var(--warm);font-size:13px;font-weight:600;letter-spacing:.3px;
+  }
+  .kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--warm);box-shadow:0 0 10px var(--warm)}
+  h1{
+    margin:22px 0 14px;
+    font-size:clamp(32px,5.2vw,56px);
+    line-height:1.12;letter-spacing:-.025em;font-weight:800;
+    background:linear-gradient(120deg,#fff 20%,#ffd9b0 55%,#a8dcff 90%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{color:var(--muted);font-size:clamp(14px,1.6vw,16.5px);line-height:1.75;max-width:640px;margin:0 auto}
+  .sub b{color:#dfe8f2;font-weight:600}
+  .stats{display:flex;justify-content:center;gap:clamp(24px,6vw,64px);margin-top:32px;flex-wrap:wrap}
+  .stat{text-align:center}
+  .stat .n{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--warm),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .l{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.6px}
+
+  /* ---------- Filters ---------- */
+  .bar{
+    position:sticky;top:0;z-index:30;
+    padding:14px 0;
+    background:rgba(9,11,15,.78);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar-inner{display:flex;flex-direction:column;gap:11px}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .row .label{font-size:12px;color:#6b7787;letter-spacing:1.5px;margin-right:2px;font-weight:600}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;min-width:0}
+  .chip{
+    padding:7px 15px;border-radius:999px;border:1px solid var(--line);
+    background:rgba(255,255,255,.028);color:var(--muted);
+    font-size:13px;font-family:inherit;cursor:pointer;
+    transition:all .22s ease;white-space:nowrap;
+  }
+  .chip:hover{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+  .chip.on{
+    background:linear-gradient(135deg,var(--warm),var(--pink));
+    color:#231306;border-color:transparent;font-weight:700;
+    box-shadow:0 6px 18px -6px rgba(255,143,177,.6);
+  }
+  .search{
+    margin-left:10px;display:flex;align-items:center;gap:8px;
+    padding:8px 14px;border-radius:999px;
+    border:1px solid var(--line);background:rgba(255,255,255,.028);
+    transition:.22s;
+  }
+  .search:focus-within{border-color:rgba(255,178,107,.5);background:rgba(255,255,255,.055)}
+  .search input{
+    background:none;border:none;outline:none;color:var(--text);
+    font-size:13px;font-family:inherit;width:168px;
+  }
+  .search input::placeholder{color:#5f6b7a}
+  .search svg{opacity:.5;flex:none}
+  .rand{
+    display:inline-flex;align-items:center;gap:7px;margin-left:auto;
+    padding:8px 15px;border-radius:999px;cursor:pointer;
+    border:1px solid rgba(94,200,255,.3);background:rgba(94,200,255,.08);
+    color:var(--cool);font-size:13px;font-weight:600;font-family:inherit;
+    transition:.22s;
+  }
+  .rand:hover{background:rgba(94,200,255,.16);border-color:rgba(94,200,255,.55)}
+
+  /* ---------- Grid ---------- */
+  main{padding:34px 0 20px}
+  .grid{
+    display:grid;gap:20px;
+    grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
+  }
+  .card{
+    position:relative;border-radius:var(--radius);overflow:hidden;
+    background:var(--card);border:1px solid var(--line);cursor:pointer;
+    transition:transform .38s cubic-bezier(.2,.8,.2,1),box-shadow .38s,border-color .38s;
+    animation:rise .5s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .card:hover{
+    transform:translateY(-7px);
+    box-shadow:0 28px 56px -24px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.06);
+    border-color:rgba(255,255,255,.17);
+  }
+  .thumb{
+    position:relative;aspect-ratio:16/9;overflow:hidden;
+    background:linear-gradient(140deg,var(--c1),var(--c2));
+  }
+  .thumb img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .7s cubic-bezier(.2,.8,.2,1);
+    opacity:0;transition:opacity .5s,transform .7s cubic-bezier(.2,.8,.2,1);
+  }
+  .thumb img.ok{opacity:1}
+  .card:hover .thumb img{transform:scale(1.08)}
+  .thumb::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to top,rgba(9,11,15,.94) 2%,rgba(9,11,15,.32) 42%,rgba(9,11,15,.05) 72%);
+  }
+  .score{
+    position:absolute;top:11px;left:11px;z-index:3;
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 9px;border-radius:8px;
+    background:rgba(9,11,15,.72);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,178,107,.28);
+    color:var(--warm);font-size:12.5px;font-weight:800;letter-spacing:.2px;
+  }
+  .score svg{margin-top:-1px}
+  .age{
+    position:absolute;top:11px;right:11px;z-index:3;
+    padding:4px 9px;border-radius:8px;
+    background:rgba(9,11,15,.72);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.16);
+    color:#d8e4f0;font-size:12px;font-weight:700;
+  }
+  .playbtn{
+    position:absolute;inset:0;margin:auto;z-index:4;
+    width:58px;height:58px;border-radius:50%;
+    display:grid;place-items:center;
+    background:rgba(255,255,255,.94);
+    box-shadow:0 10px 30px -8px rgba(0,0,0,.7);
+    opacity:0;transform:scale(.72);
+    transition:all .34s cubic-bezier(.2,.8,.2,1);
+    pointer-events:none;cursor:pointer;text-decoration:none;
+  }
+  .card:hover .playbtn{opacity:1;transform:scale(1);pointer-events:auto}
+  .playbtn:hover{background:#fff;box-shadow:0 12px 34px -6px rgba(255,178,107,.85)}
+  .playbtn svg{margin-left:3px}
+  .body{padding:15px 16px 17px}
+  .body h3{font-size:16.5px;font-weight:700;letter-spacing:-.01em;line-height:1.35}
+  .meta{
+    display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+    margin-top:6px;font-size:11.5px;color:#7c8899;letter-spacing:.2px;
+  }
+  .meta .sep{opacity:.4}
+  .meta .cat{color:var(--cool);font-weight:600}
+  .desc{
+    margin-top:10px;font-size:12.8px;line-height:1.65;color:#96a3b3;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .empty{
+    text-align:center;padding:80px 20px;color:var(--muted);font-size:14px;
+  }
+  .empty span{display:block;font-size:38px;margin-bottom:14px;opacity:.5}
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top:56px;padding:34px 0 56px;
+    border-top:1px solid var(--line);
+    color:#6b7787;font-size:12.5px;line-height:2;
+  }
+  footer .t{color:#a9b6c5;font-weight:700;font-size:13.5px;margin-bottom:8px;letter-spacing:.3px}
+  footer p{max-width:900px}
+
+  /* ---------- Modal ---------- */
+  .modal{
+    position:fixed;inset:0;z-index:100;
+    display:flex;align-items:center;justify-content:center;
+    padding:22px;
+    background:rgba(4,6,9,.86);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;
+  }
+  .modal.on{opacity:1;visibility:visible}
+  .box{
+    width:min(1000px,100%);max-height:94vh;overflow-y:auto;
+    background:#0f1319;border:1px solid rgba(255,255,255,.1);
+    border-radius:20px;overflow-x:hidden;
+    box-shadow:0 40px 90px -30px #000;
+    transform:translateY(24px) scale(.98);transition:transform .38s cubic-bezier(.2,.8,.2,1);
+  }
+  .modal.on .box{transform:none}
+  .box::-webkit-scrollbar{width:8px}
+  .box::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:8px}
+  .player{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
+  .poster{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    filter:brightness(.52) saturate(1.05);
+    transform:scale(1.02);
+  }
+  .poster-shade{
+    position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 48%, rgba(0,0,0,.05) 0%, rgba(0,0,0,.55) 78%);
+  }
+  .playwrap{position:absolute;inset:0;display:grid;place-items:center}
+  .bigplay{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:18px 38px 18px 32px;border-radius:999px;
+    background:linear-gradient(135deg,var(--warm),var(--pink));
+    color:#231306;font-weight:800;font-size:17px;letter-spacing:.3px;
+    text-decoration:none;cursor:pointer;
+    box-shadow:0 16px 44px -12px rgba(255,143,177,.85),0 0 0 1px rgba(255,255,255,.18) inset;
+    transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s;
+  }
+  .bigplay:hover{transform:scale(1.045);box-shadow:0 20px 54px -12px rgba(255,143,177,1)}
+  .bigplay:active{transform:scale(.98)}
+  .srcbadge{
+    position:absolute;left:14px;bottom:12px;
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 11px;border-radius:8px;
+    background:rgba(0,0,0,.5);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.14);
+    color:rgba(255,255,255,.8);font-size:11.5px;letter-spacing:.2px;
+  }
+  .srcbadge .d{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  .info{padding:22px 26px 26px}
+  .info-head{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+  .info h2{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.3}
+  .info .en{font-size:12.5px;color:#6f7c8c;margin-top:5px;letter-spacing:.3px}
+  .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+  .tag{
+    padding:5px 11px;border-radius:8px;font-size:11.5px;font-weight:600;
+    background:rgba(255,255,255,.05);border:1px solid var(--line);color:#a8b5c4;
+  }
+  .tag.hot{color:var(--warm);border-color:rgba(255,178,107,.3);background:rgba(255,178,107,.08)}
+  .tag.age-t{color:var(--green);border-color:rgba(124,224,163,.28);background:rgba(124,224,163,.08)}
+  .info .d{margin-top:16px;font-size:14px;line-height:1.85;color:#b3c0cf}
+  .tipbox{
+    margin-top:16px;padding:13px 15px;border-radius:12px;
+    background:rgba(94,200,255,.06);border:1px solid rgba(94,200,255,.18);
+    font-size:12.8px;line-height:1.75;color:#9fc7de;
+  }
+  .tipbox b{color:var(--cool);font-weight:700;margin-right:6px}
+  .phint{margin-top:12px;font-size:12px;color:#6b7787;line-height:1.6}
+  .toast{
+    position:fixed;left:50%;bottom:40px;transform:translate(-50%,16px);
+    padding:13px 24px;border-radius:13px;
+    background:rgba(22,28,36,.97);border:1px solid rgba(255,255,255,.17);
+    color:#eaf2fa;font-size:13.5px;font-weight:600;letter-spacing:.2px;
+    box-shadow:0 20px 46px -16px #000;
+    opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:300;
+    backdrop-filter:blur(10px);white-space:nowrap;max-width:92vw;
+  }
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  .actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 20px;border-radius:11px;font-size:13.5px;font-weight:600;
+    font-family:inherit;cursor:pointer;text-decoration:none;
+    border:1px solid var(--line);background:rgba(255,255,255,.05);color:#cfdae6;
+    transition:.22s;
+  }
+  .btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.24)}
+  .btn.primary{
+    background:linear-gradient(135deg,var(--warm),var(--pink));
+    color:#231306;border-color:transparent;
+    box-shadow:0 10px 24px -10px rgba(255,143,177,.7);
+  }
+  .btn.primary:hover{filter:brightness(1.08)}
+  .close{
+    position:absolute;top:12px;right:12px;z-index:9;
+    width:36px;height:36px;border-radius:50%;cursor:pointer;
+    display:grid;place-items:center;
+    background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);
+    color:#fff;transition:.2s;backdrop-filter:blur(6px);
+  }
+  .close:hover{background:rgba(255,255,255,.18);transform:rotate(90deg)}
+
+  @media(max-width:720px){
+    .wrap{padding:0 16px}
+    .hero{padding:44px 0 24px}
+    .stats{gap:26px;margin-top:26px}
+    .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;flex:1 1 auto;padding:2px 0}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{flex:none}
+    .search{margin-left:0;width:100%;flex:1 1 100%;order:9}
+    .search input{width:100%}
+    .rand{margin-left:0;flex:none}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:14px}
+    .body{padding:12px 12px 14px}
+    .body h3{font-size:14px}
+    .desc{display:none}
+    .info{padding:18px}
+    .info h2{font-size:18px}
+    .modal{padding:0}
+    .box{border-radius:0;max-height:100vh;height:100%}
+    .row .label{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker"><span class="dot"></span>为 3–6 岁孩子挑选 · 家长放心片单</div>
+    <h1>小小纪录片放映厅</h1>
+    <p class="sub">27 部<b>豆瓣高分</b>纪录片，专为低龄孩子筛过一遍：无血腥镜头、单集短、有旁白或干脆没有台词。点开卡片就能看。</p>
+    <div class="stats">
+      <div class="stat"><div class="n">27</div><div class="l">部精选</div></div>
+      <div class="stat"><div class="n">9.3</div><div class="l">平均评分</div></div>
+      <div class="stat"><div class="n">5–30</div><div class="l">分钟 / 集</div></div>
+      <div class="stat"><div class="n">3+</div><div class="l">最低适龄</div></div>
+    </div>
+  </header>
+</div>
+
+<div class="bar">
+  <div class="wrap bar-inner">
+    <div class="row" id="ageRow">
+      <span class="label">年龄</span>
+      <div class="chips">
+        <button class="chip on" data-age="all">全部</button>
+        <button class="chip" data-age="3">3 岁 +</button>
+        <button class="chip" data-age="4">4 岁 +</button>
+        <button class="chip" data-age="5">5 岁 +</button>
+        <button class="chip" data-age="6">6 岁 +</button>
+      </div>
+    </div>
+    <div class="row" id="catRow">
+      <span class="label">类型</span>
+      <div class="chips">
+        <button class="chip on" data-cat="all">全部</button>
+        <button class="chip" data-cat="动物自然">动物自然</button>
+        <button class="chip" data-cat="科学启蒙">科学启蒙</button>
+        <button class="chip" data-cat="设计思维">设计思维</button>
+        <button class="chip" data-cat="人文世界">人文世界</button>
+      </div>
+      <button class="rand" id="randBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        随机看一部
+      </button>
+      <label class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="q" type="text" placeholder="搜片名，如：企鹅、恐龙">
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <main>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" style="display:none"><span>🍃</span>没有找到符合条件片子，换个筛选试试</div>
+  </main>
+
+  <footer>
+    <div class="t">陪看小建议</div>
+    <p>3–4 岁每次 10–15 分钟、4–6 岁每次 20–30 分钟，看完聊两句「你最喜欢哪个动物」比多看一集更有用。评分整理自公开资料（豆瓣参考值，非实时），可能随版本更新略有出入；片源为 B 站公开视频，版权归原制作方所有，本页仅作观看索引。若某个片源不完整或失效，点弹窗里的「搜更多版本」可找同片其他来源。</p>
+  </footer>
+</div>
+
+<div class="modal" id="modal">
+  <div class="box" id="box">
+    <button class="close" id="closeBtn" aria-label="关闭">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="player">
+      <img class="poster" id="mPoster" alt="">
+      <div class="poster-shade"></div>
+      <div class="playwrap">
+        <a class="bigplay" id="mPlay" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          立即播放
+        </a>
+      </div>
+      <div class="srcbadge"><span class="d"></span>片源来自 B 站，点击后在新窗口播放</div>
+    </div>
+    <div class="info">
+      <div class="info-head">
+        <div style="flex:1;min-width:220px">
+          <h2 id="mTitle"></h2>
+          <div class="en" id="mEn"></div>
+        </div>
+      </div>
+      <div class="tags" id="mTags"></div>
+      <p class="d" id="mDesc"></p>
+      <div class="tipbox"><b>陪看提示</b><span id="mTip"></span></div>
+      <p class="phint">B 站不允许第三方网页内嵌播放（与是否大会员无关），「立即播放」会在新标签页打开。首次跳转需登录一次，之后浏览器会记住登录态；若按钮无反应，用「复制链接」。</p>
+      <div class="actions">
+        <a class="btn primary" id="mBili" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          搜更多版本
+        </a>
+        <button class="btn" id="mCopy">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+          复制链接
+        </button>
+        <button class="btn" id="mNext">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+          换一部看看
+        </button>
+        <button class="btn" id="mClose">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = [
+  { id: 1, title: "微观小世界", en: "Minuscule · 法国", age: 3, cat: "动物自然", score: "9.4", eps: "78 集 · 5 分钟/集", bvid: "BV1xd4y1R72w", pic: "https://i1.hdslb.com/bfs/archive/419bc8de66b7589ad3b4641aae6d5d09d4b98126.png@640w_360h_1c.webp", c1: "#2e7d5b", c2: "#16241d", desc: "全程没有一句台词，只有草地里的虫虫在忙自己的事——3 岁也能看懂的自然启蒙第一课。", tip: "无对白、节奏慢，很适合当睡前片；孩子看不懂的地方不用解释，先让他自己观察。" },
+  { id: 2, title: "小小世界", en: "Tiny World · Apple TV+", age: 4, cat: "动物自然", score: "9.5", eps: "2 季 · 30 分钟/集", bvid: "BV1y24y1n7ct", pic: "https://i0.hdslb.com/bfs/archive/8c53189d6d701f98f5c77b9c8dc4fa579e41b5f9.jpg@640w_360h_1c.webp", c1: "#2a7f8f", c2: "#12222a", desc: "把镜头缩到 10 厘米高，看瓢虫、跳蛛、变色龙在草叶间讨生活，每一帧都能当壁纸。", tip: "单集 30 分钟，建议一次看一集；可以顺便问孩子「如果你只有指甲盖那么大，最怕什么」。" },
+  { id: 3, title: "如果我是一只动物", en: "If I Were an Animal · 法国", age: 3, cat: "动物自然", score: "9.2", eps: "52 集 · 5 分钟/集", bvid: "BV1b84y167G5", pic: "https://i0.hdslb.com/bfs/archive/0566ef48a6dc3410acf93022038750027eb1539d.png@640w_360h_1c.webp", c1: "#b5702f", c2: "#2a1d10", desc: "每集 5 分钟讲一种动物宝宝从出生到独立，像在听动物妈妈讲睡前故事。", tip: "时长正好卡住低龄孩子的注意力，一集一个动物，看完可以问「你刚才是哪种动物」。" },
+  { id: 4, title: "小小人类星球", en: "Little Human Planet · BBC", age: 4, cat: "人文世界", score: "9.7", eps: "16 集 · 5 分钟/集", bvid: "BV1B14y197DB", pic: "https://i0.hdslb.com/bfs/archive/f6c5f5ef7052197037363f9b00cebb26280d64c1.png@640w_360h_1c.webp", c1: "#6a5acd", c2: "#1b1836", desc: "跟着蒙古、雨林、沙漠里的孩子过一天，孩子第一次发现「世界不止我家这样」。", tip: "建议配一个地球仪或世界地图，边看边指位置，地理启蒙顺手就做了。" },
+  { id: 5, title: "像乌鸦一样思考", en: "Think Like a Crow · NHK", age: 5, cat: "科学启蒙", score: "9.3", eps: "20 集 · 10 分钟/集", bvid: "BV1tXsoecExv", pic: "https://i1.hdslb.com/bfs/archive/bf3262cc1344fd8a483db11e2c8bb2daaa4c88ac.png@640w_360h_1c.webp", c1: "#3a5f8a", c2: "#141d2a", desc: "NHK 的经典思维课，「观察—假设—实验—思考」四步，看完孩子会自己找答案。", tip: "每集的小实验在家基本能复刻，看完别急着揭晓答案，先让孩子猜。" },
+  { id: 6, title: "啊！设计", en: "Design Ah! · NHK", age: 4, cat: "设计思维", score: "9.4", eps: "60 集 · 15 分钟/集", bvid: "BV1hwKfzmEr4", pic: "https://i1.hdslb.com/bfs/archive/b85e71599e0c0470360455b17d087b58fdfacc25.jpg@640w_360h_1c.webp", c1: "#b08a2e", c2: "#241d0d", desc: "把酱油瓶、可乐瓶、地铁票拆开看，日本设计大师带孩子发现「原来东西是这样想出来的」。", tip: "看完可以和孩子一起拆一件家里不要的旧物，从「为什么长这样」开始聊。" },
+  { id: 7, title: "毕达哥拉斯装置", en: "PythagoraSwitch · NHK", age: 4, cat: "设计思维", score: "9.2", eps: "每集 10 分钟", bvid: "BV1vm4y1E7KZ", pic: "https://i0.hdslb.com/bfs/archive/1abc1d4fa3769a2278bf750b90831d8e7fc5c8ba.jpg@640w_360h_1c.webp", c1: "#a8503f", c2: "#26120f", desc: "多米诺、滚珠、小机关一环扣一环，看完孩子会想自己搭一条。", tip: "最适合看完立刻动手的一部，积木、纸板、弹珠就能复刻一段机关。" },
+  { id: 8, title: "大科学实验", en: "Great Science Experiment · NHK", age: 5, cat: "科学启蒙", score: "9.3", eps: "35 集 · 10 分钟/集", bvid: "BV1Ex41147qy", pic: "https://i1.hdslb.com/bfs/archive/8fc2c7211b91e6631e45aad33f1a260b3a6e8ca3.png@640w_360h_1c.webp", c1: "#4a5fa8", c2: "#151a2e", desc: "用真实验回答「到底行不行」——一千个人同时跳会怎样？NHK 把好奇心拍成了片子。", tip: "问题都是孩子会问的那种，可以暂停下来先让孩子猜结果，再看实验。" },
+  { id: 9, title: "帝企鹅日记", en: "March of the Penguins · 法国", age: 5, cat: "动物自然", score: "8.7", eps: "80 分钟 · 电影版", bvid: "BV1ZqHtz7Eyg", pic: "https://i0.hdslb.com/bfs/archive/e5627286d9c0498e62ecc41b1a1000cc209771be.jpg@640w_360h_1c.webp", c1: "#4a7fa8", c2: "#13212c", desc: "南极零下 40 度，企鹅爸爸把蛋放在脚背上站两个月。关于坚持最温柔的一课。", tip: "有企鹅受冻、幼崽夭折的镜头，建议家长陪看并简单解释；B 站这版是 24 分钟精选版，想看全片点「搜更多版本」。" },
+  { id: 10, title: "地球：神奇的一天", en: "Earth: One Amazing Day · BBC", age: 4, cat: "动物自然", score: "8.1", eps: "94 分钟 · 电影版", bvid: "BV1Lx41147pD", pic: "https://i1.hdslb.com/bfs/archive/876931253cdae10b2217633ea5b989e02a28417f.jpg@640w_360h_1c.webp", c1: "#a07a3a", c2: "#241c0e", desc: "从日出到日落，跟着树懒、斑马宝宝、抹香鲸过完地球的一天，全片没有血腥镜头。", tip: "适合周末全家一起看；看完可以聊聊「我们这一天，地球另一边正在发生什么」。" },
+  { id: 11, title: "蓝色星球", en: "The Blue Planet · BBC", age: 5, cat: "动物自然", score: "9.7", eps: "8 集 · 50 分钟/集", bvid: "BV1x8411G7Ni", pic: "https://i0.hdslb.com/bfs/archive/4aa9d0e909cbd3c4da57fffa6ef5e45049b7147c.jpg@640w_360h_1c.webp", c1: "#2a5f9f", c2: "#101c30", desc: "潜入深海看发光的水母和会变色的章鱼，BBC 海洋纪录片的开山之作。", tip: "深海段落偏暗，怕黑的孩子建议白天看；单集较长，可分两次看完。" },
+  { id: 12, title: "我们的星球", en: "Our Planet · Netflix", age: 5, cat: "动物自然", score: "9.8", eps: "8 集 · 50 分钟/集", bvid: "BV1oJ41137oE", pic: "https://i0.hdslb.com/bfs/archive/9426615e05a803cc906402db6af431d4bc6ca0cc.jpg@640w_360h_1c.webp", c1: "#2f7f6a", c2: "#102420", desc: "从极地到雨林，用最震撼的画面讲一件事——这个星球有多美，就有多需要被珍惜。", tip: "画面信息量很大，建议用大屏看；有捕食镜头，可提前告诉孩子「这是动物在找食物」。" },
+  { id: 13, title: "安迪的恐龙冒险", en: "Andy's Dinosaur Adventures · BBC", age: 3, cat: "科学启蒙", score: "8.9", eps: "20 集 · 14 分钟/集", bvid: "BV1hQ4y1h7uQ", pic: "https://i2.hdslb.com/bfs/archive/109d43fe261c6ba417b10d653b64aae55ddfc196.png@640w_360h_1c.webp", c1: "#6a7a3a", c2: "#1c2010", desc: "真人主持人穿越回恐龙时代，摸得到、看得见，恐龙迷的第一部「纪录片」。", tip: "真人+特效，低龄孩子接受度高；每集一个恐龙，看完可以画下来。" },
+  { id: 14, title: "熊世界", en: "Bears · Disneynature", age: 5, cat: "动物自然", score: "8.9", eps: "78 分钟 · 电影版", bvid: "BV1FZ4y167Lq", pic: "https://i2.hdslb.com/bfs/archive/bcfb08844db8c9498fa337c6a08cf315f314411d.jpg@640w_360h_1c.webp", c1: "#8a5a3a", c2: "#241710", desc: "阿拉斯加的棕熊妈妈带着两只小熊翻雪山、找鲑鱼，迪士尼自然出品，故事性很强。", tip: "有熊捕鱼的镜头，属自然行为，家长顺口解释一句就好。" },
+  { id: 15, title: "萌宠成长记", en: "Too Cute · Discovery", age: 4, cat: "动物自然", score: "9.4", eps: "3 季 · 43 分钟/集", bvid: "BV1wc411Z7NY", pic: "https://i2.hdslb.com/bfs/archive/1ccb66d0248ebaedd11802b19ccad1f259ab26c1.png@640w_360h_1c.webp", c1: "#a85a7a", c2: "#26141c", desc: "小猫小狗从睁眼到断奶，全程高萌，适合第一次接触纪录片的孩子。", tip: "几乎零压力的一部，适合作为「纪录片入门」，先让孩子坐得住。" },
+  { id: 16, title: "迁徙的鸟", en: "Le Peuple Migrateur · 法国", age: 6, cat: "动物自然", score: "9.1", eps: "98 分钟 · 电影版", bvid: "BV1Gx411b7e9", pic: "https://i0.hdslb.com/bfs/archive/80c3a8024822bb7c3ed851432759f2b2e22ce766.png@640w_360h_1c.webp", c1: "#3f7aa8", c2: "#121e28", desc: "跟着候鸟飞过四十多个国家，几乎没有人说话，只有翅膀和风声。", tip: "画面诗意、节奏慢，适合大一点的孩子；可以当「看世界」的美育片。" },
+  { id: 17, title: "美丽中国", en: "Wild China · BBC", age: 6, cat: "人文世界", score: "9.3", eps: "6 集 · 50 分钟/集", bvid: "BV1yb4y147zE", pic: "https://i0.hdslb.com/bfs/archive/4f1b070794f70cf1a421b0e6cc871f05d90b4cc5.png@640w_360h_1c.webp", c1: "#3a6a4a", c2: "#11201a", desc: "BBC 镜头下的中国——竹林里的熊猫、喀斯特的洞穴、青藏高原的雪豹，认识自己的国家。", tip: "地理与乡土启蒙的好材料，可以对照自己家所在的省份找一集看。" },
+  { id: 18, title: "企鹅群里有特务", en: "Penguins: Spy in the Huddle · BBC", age: 5, cat: "动物自然", score: "9.7", eps: "3 集 · 50 分钟/集", bvid: "BV1bV4y1T7Sj", pic: "https:http://i1.hdslb.com/bfs/archive/83b2b8bb0c0674a2dba1a84e0ba2ed64f87c08a6.png@640w_360h_1c.webp", c1: "#3f7f9f", c2: "#12222c", desc: "17 只机器企鹅混进真企鹅群，拍到它们求偶、孵蛋、带娃的全部秘密。", tip: "间谍摄像机让孩子看得目不转睛；有海豹捕食企鹅的镜头，家长可提前解释。" },
+  { id: 19, title: "荒野间谍", en: "Spy in the Wild · BBC", age: 5, cat: "动物自然", score: "9.4", eps: "5 集 · 58 分钟/集", bvid: "BV1mD4y1m7Yr", pic: "https:http://i0.hdslb.com/bfs/archive/d4c19d26038d0c9cd4374904d75a4f18b2893559.png@640w_360h_1c.webp", c1: "#6a7f3a", c2: "#1c2010", desc: "机器小猴、机器鳄鱼、机器狼混进动物家里，从动物自己的视角看世界。", tip: "孩子最爱的一部，看完可以一起讨论「如果是你，会造一只什么间谍」。" },
+  { id: 20, title: "隐秘王国", en: "Hidden Kingdoms · BBC", age: 4, cat: "动物自然", score: "9.4", eps: "3 集 · 50 分钟/集", bvid: "BV1Za411E75V", pic: "https:http://i1.hdslb.com/bfs/archive/7571e0c281b5594fec4bf31301dcf5d271006d2d.jpg@640w_360h_1c.webp", c1: "#7a4a9f", c2: "#1e1226", desc: "把镜头交给花栗鼠、蝎子、小狨猴——在草丛和沙地里，它们的世界像大片。", tip: "小型动物视角，代入感强；个别捕食镜头较紧张，建议陪看。" },
+  { id: 21, title: "最大的小小农场", en: "The Biggest Little Farm", age: 5, cat: "动物自然", score: "9.4", eps: "92 分钟 · 电影版", bvid: "BV125411u7pV", pic: "https:http://i1.hdslb.com/bfs/archive/99368fac17ea12e36f309f5659d7a6d9d4a2d86e.jpg@640w_360h_1c.webp", c1: "#8a7a3a", c2: "#24200e", desc: "一对夫妻在荒地上种出一座农场，猪、鸡、鸭子、蚯蚓各司其职，像一部活的生态课。", tip: "讲「万物互相帮忙」最直观的一部，看完可以带孩子种一盆东西。" },
+  { id: 22, title: "我的章鱼老师", en: "My Octopus Teacher · Netflix", age: 6, cat: "动物自然", score: "9.4", eps: "85 分钟 · 电影版", bvid: "BV1gf4y1D7cr", pic: "https:http://i0.hdslb.com/bfs/archive/e9c9ffccfaad0c80adc4f19a1550a836983e3729.jpg@640w_360h_1c.webp", c1: "#2a6f7f", c2: "#0e1e24", desc: "一个人和一只章鱼做了一年的朋友，从它身上学会了怎么面对害怕。", tip: "情绪浓度高，适合大一点、能安静看完的孩子；看完聊聊「你有没有这样的朋友」。" },
+  { id: 23, title: "南太平洋", en: "South Pacific · BBC", age: 5, cat: "动物自然", score: "9.5", eps: "12 集 · 50 分钟/集", bvid: "BV1nU4y1W7tX", pic: "https:http://i0.hdslb.com/bfs/archive/c702f9c7d6a799d93feb2a67573bcd85f33bca07.jpg@640w_360h_1c.webp", c1: "#2a7fa8", c2: "#10202c", desc: "从火山岛到珊瑚海，太平洋上的岛屿像一颗颗散落的星球，各有各的怪动物。", tip: "岛屿和海洋地理启蒙的好材料，可配地球仪一起看。" },
+  { id: 24, title: "地球脉动", en: "Planet Earth · BBC", age: 4, cat: "动物自然", score: "9.7", eps: "第一集 · 49 分钟", bvid: "BV1uSLEzdEJr", pic: "https:http://i2.hdslb.com/bfs/archive/e6acf53e99e54e53d241b9f486929e22a32c5fe2.jpg@640w_360h_1c.webp", c1: "#3a6f8a", c2: "#101e26", desc: "从南极到北极，一集走完地球的两极，雪豹、企鹅、北极熊轮番登场。", tip: "B 站这版是单集片源，想看全 11 集点「搜更多版本」；有捕食镜头，家长可解释。" },
+  { id: 25, title: "七个世界，一个星球", en: "Seven Worlds, One Planet · BBC", age: 5, cat: "动物自然", score: "9.7", eps: "亚洲篇 · 56 分钟", bvid: "BV1o3411775B", pic: "https:http://i0.hdslb.com/bfs/archive/64b32e212d7c651eadcf6c9db3e0ff8dfdc15b1b.jpg@640w_360h_1c.webp", c1: "#4a6a8a", c2: "#141c26", desc: "七大洲各拍一集，这一集讲亚洲——从雨林到高原，动物在最大的一块大陆上求生。", tip: "B 站这版是亚洲篇单集，其余大洲点「搜更多版本」；画面信息量大，建议大屏。" },
+  { id: 26, title: "如果国宝会说话", en: "Every Treasure Tells a Story · 央视", age: 5, cat: "人文世界", score: "9.4", eps: "每集 5 分钟", bvid: "BV1rzM369EPG", pic: "https:http://i2.hdslb.com/bfs/archive/d0a4da31d0de6785c92a77bd88d697cbfc0502aa.jpg@640w_360h_1c.webp", c1: "#8a5a2a", c2: "#241a0e", desc: "每集 5 分钟讲一件国宝，文案像诗，孩子第一次发现博物馆里的东西会「说话」。", tip: "B 站这版是第一集，每集独立成篇，点「搜更多版本」能看全部 100 集。" },
+  { id: 27, title: "航拍中国", en: "Aerial China · 央视", age: 6, cat: "人文世界", score: "9.2", eps: "4K · 74 分钟", bvid: "BV1ns4y1e7i1", pic: "https:http://i0.hdslb.com/bfs/archive/a40ffd569adfb614de7c519b31500ea393a40ef2.jpg@640w_360h_1c.webp", c1: "#3a7a5a", c2: "#101e18", desc: "从天上俯瞰中国的山河城市，雪山、稻田、沙漠、港口，一镜到底的壮阔。", tip: "适合大一点的孩子，可对照地图找片中的省份；B 站这版是精选合辑。" }
+];
+
+const state = { age:'all', cat:'all', q:'' };
+const grid = document.getElementById('grid');
+const emptyEl = document.getElementById('empty');
+const modal = document.getElementById('modal');
+let current = null;
+
+function cardHTML(d, i){
+  return `
+  <article class="card" data-id="${d.id}" style="animation-delay:${Math.min(i*32,320)}ms;--c1:${d.c1};--c2:${d.c2}">
+    <div class="thumb">
+      <img src="${d.pic}" alt="${d.title}" loading="lazy" referrerpolicy="no-referrer"
+           onload="this.classList.add('ok')" onerror="this.style.display='none'">
+      <div class="score">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+        ${d.score}
+      </div>
+      <div class="age">${d.age} 岁 +</div>
+      <a class="playbtn" href="https://www.bilibili.com/video/${d.bvid}" target="_blank" rel="noopener" title="直接播放">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#0f1319"><path d="M7 4l13 8-13 8z"/></svg>
+      </a>
+    </div>
+    <div class="body">
+      <h3>${d.title}</h3>
+      <div class="meta">
+        <span class="cat">${d.cat}</span><span class="sep">·</span><span>${d.eps}</span>
+      </div>
+      <p class="desc">${d.desc}</p>
+    </div>
+  </article>`;
+}
+
+function render(){
+  const q = state.q.trim().toLowerCase();
+  const list = DATA.filter(d=>{
+    if(state.age !== 'all' && d.age !== Number(state.age)) return false;
+    if(state.cat !== 'all' && d.cat !== state.cat) return false;
+    if(q){
+      const hay = (d.title + d.en + d.desc + d.cat).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  grid.innerHTML = list.map(cardHTML).join('');
+  emptyEl.style.display = list.length ? 'none' : 'block';
+}
+
+function openPlayer(d){
+  current = d;
+  document.getElementById('mTitle').textContent = d.title;
+  document.getElementById('mEn').textContent = d.en + ' · ' + d.eps;
+  document.getElementById('mDesc').textContent = d.desc;
+  document.getElementById('mTip').textContent = d.tip;
+  document.getElementById('mTags').innerHTML =
+    `<span class="tag hot">豆瓣 ${d.score}</span>` +
+    `<span class="tag age-t">${d.age} 岁 +</span>` +
+    `<span class="tag">${d.cat}</span>` +
+    `<span class="tag">${d.eps}</span>`;
+  const bili = 'https://www.bilibili.com/video/' + d.bvid;
+  document.getElementById('mBili').href = 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(d.title);
+  document.getElementById('mPlay').href = bili;
+  const poster = document.getElementById('mPoster');
+  poster.src = d.pic.replace(/@\d+w_\d+h_1c\.webp$/, '@1280w_720h_1c.webp');
+  poster.onerror = function(){ this.style.display = 'none'; };
+
+  modal.classList.add('on');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('box').scrollTop = 0;
+}
+
+function closeModal(){
+  modal.classList.remove('on');
+  document.body.style.overflow = '';
+  setTimeout(()=>{ current = null; }, 320);
+}
+
+grid.addEventListener('click', e=>{
+  if(e.target.closest('.playbtn')){ e.stopPropagation(); return; }
+  const card = e.target.closest('.card');
+  if(!card) return;
+  const d = DATA.find(x=>x.id === Number(card.dataset.id));
+  if(d) openPlayer(d);
+});
+
+document.getElementById('ageRow').addEventListener('click', e=>{
+  const b = e.target.closest('.chip'); if(!b) return;
+  document.querySelectorAll('#ageRow .chip').forEach(c=>c.classList.remove('on'));
+  b.classList.add('on');
+  state.age = b.dataset.age; render();
+});
+
+document.getElementById('catRow').addEventListener('click', e=>{
+  const b = e.target.closest('.chip'); if(!b) return;
+  document.querySelectorAll('#catRow .chip').forEach(c=>c.classList.remove('on'));
+  b.classList.add('on');
+  state.cat = b.dataset.cat; render();
+});
+
+document.getElementById('q').addEventListener('input', e=>{
+  state.q = e.target.value; render();
+});
+
+document.getElementById('randBtn').addEventListener('click', ()=>{
+  const pool = DATA.filter(d=>d.id !== (current && current.id));
+  openPlayer(pool[Math.floor(Math.random()*pool.length)]);
+});
+
+document.getElementById('closeBtn').addEventListener('click', closeModal);
+
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toastEl.classList.remove('on'), 2400);
+}
+
+document.getElementById('mCopy').addEventListener('click', function(){
+  const url = document.getElementById('mPlay').href;
+  const done = ()=>toast('链接已复制，粘到浏览器地址栏就能看');
+  const fallback = function(){
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try{ ok = document.execCommand('copy'); }catch(e){ ok = false; }
+    ta.remove();
+    toast(ok ? '链接已复制，粘到浏览器地址栏就能看' : '复制失败，请手动打开 B 站搜索片名');
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(done).catch(fallback);
+  } else {
+    fallback();
+  }
+});
+document.getElementById('mClose').addEventListener('click', closeModal);
+document.getElementById('mNext').addEventListener('click', ()=>{
+  const pool = DATA.filter(d=>d.id !== (current && current.id));
+  openPlayer(pool[Math.floor(Math.random()*pool.length)]);
+});
+modal.addEventListener('click', e=>{ if(e.target === modal) closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && modal.classList.contains('on')) closeModal(); });
+
+render();
+</script>
+</body>
+</html>
